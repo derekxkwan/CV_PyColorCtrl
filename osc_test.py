@@ -7,6 +7,8 @@ cur_ip = "127.0.0.1"
 cur_disp = dispatcher.Dispatcher()
 cur_disp.map("/blue", print)
 cur_disp.map("/red", print)
+cur_disp.map("/yellow", print)
+
 
 server = osc_server.ThreadingOSCUDPServer((cur_ip, cur_port), cur_disp)
 print("Serving on {}".format(server.server_address))
