@@ -64,8 +64,8 @@ def center_strformat(cur_centers):
 
 def send_osc(color_tag, cur_center):
     #ret_str = center_strformat(cur_centers)
-    cur_x = cur_center[0]
-    cur_y = cur_center[1]
+    cur_x = cur_center[0]/cap_w
+    cur_y = cur_center[1]/cap_h
     if cur_x >= 0 and cur_y >= 0:
         client.send_message(color_tag, "1," + ",".join([str(cur_x), str(cur_y)]))
     else:
