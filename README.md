@@ -1,6 +1,9 @@
 # CV_PyColorCtrl
 experiments in sending osc messages corresponding to differently colored objects
 
+
+[![cv_pycolorctrl demo](cv_pycolorctrl_1-16-19.png)](https://youtu.be/Qr1cq7uNvM4 "demo")
+
 - **Python 3** requires `opencv-python` (OpenCV 4.0), and `python-osc`
 
 ## Components
