@@ -1,5 +1,5 @@
 # CV_PyColorCtrl
-experiments in sending osc messages corresponding to differently colored objects
+opencv /osc webcam color-based xy-controller
 
 - **Python 3** requires `opencv-python` (OpenCV 4.0), and `python-osc`
 
