@@ -12,5 +12,9 @@ experiments in sending osc messages corresponding to differently colored objects
   - format: "o,x,y" string where o is flag for object detected (0/1), and x and y are x- and y- coords ([0,0] top-left, [1,1] bottom-right)
 - **osc_test.py** - test reception of osc messages with tags `/red`, `/blue`, etc.
 
+
+## Notes
+- haven't made user-friendly yet (i.e. choosing video input)
+
 ## LICENSE
 gpl v 3
