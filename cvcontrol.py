@@ -9,30 +9,37 @@ from pythonosc import udp_client
 
 # cv vars
 window_capture_name = "video capture"
-area_thresh = 30
+area_thresh = 70
 
+inv_thresh = 3
 num_avg = 3
+
+#num_inv = num frames invisible
 color_dict = {
     "red": {
-        "bounds": [(0, 15, 30), (10, 255, 255), (160, 15, 50), (180, 255 ,255)],
+        "bounds": [(0, 70, 70), (15, 255, 255), (170, 70, 70), (179, 255 ,255)],
         "bgr": (0,0,255),
         "check": True,
-        "avg": [-1, -1] },
+        "avg": [-1, -1],
+        "num_inv": inv_thresh },
     "blue": {
-        "bounds": [(90, 15, 30), (125, 255, 255)],
+        "bounds": [(90, 20, 50), (125, 255, 255)],
         "bgr": (255, 0, 0),
         "check": True,
-        "avg": [-1, -1] },
+        "avg": [-1, -1],
+        "num_inv": inv_thresh },
     "yellow": {
         "bounds": [(22, 110, 110), (32, 255, 255)],
         "bgr": (0, 255, 255),
         "check": False,
-        "avg": [-1, -1] },
+        "avg": [-1, -1],
+        "num_inv": inv_thresh },
     "green": {
-        "bounds": [(39, 50, 70), (70, 255, 255)],
+        "bounds": [(45, 50, 70), (70, 255, 255)],
         "bgr": (0, 255, 0),
         "check": False,
-        "avg": [-1, -1] }
+        "avg": [-1, -1],
+        "num_inv": inv_thresh }
     }
 
 cap = cv2.VideoCapture(1)
@@ -149,18 +156,40 @@ def averager(cur_old, cur_new):
     return (((num_avg - 1.0)/num_avg) * cur_old) + (cur_new/num_avg)
 
 def average_center(cur_center, new_center):
-    new_x = averager(cur_center[0], new_center[0])
-    new_y = averager(cur_center[1], new_center[1])
-    return [new_x, new_y]
-    
+    if num_avg <= 1:
+        return new_center
+    else:
+        new_x = averager(cur_center[0], new_center[0])
+        new_y = averager(cur_center[1], new_center[1])
+        return [new_x, new_y]
+
+def process_center(cur_center, new_center, prev_inv):
+    #prev_inv = previous frames invisible
+    if new_center[0] < 0 or new_center[1] < 0:
+        if prev_inv < inv_thresh:
+            # don't add to average, return old center
+            prev_inv += 1
+            new_center = cur_center
+        else:
+            # don't add to average, hide center
+            new_center = [-1, -1]
+    else:
+        if prev_inv < inv_thresh:
+            #center wasn't invisible before so go ahead and avg with old center
+            #else center was invisible, just return new_center
+            new_center = average_center(cur_center, new_center)            
+        prev_inv = 0
+    return prev_inv, new_center
+        
 def color_process(cur_frame, cur_hsv, cur_key, cur_dict):
     if cur_dict["check"] == True:
         cur_mask, cur_center = mask_proc_dispatch(cur_hsv, cur_dict["bounds"])
-        cur_avg = average_center(cur_dict["avg"], cur_center)
+        cur_inv, cur_avg = process_center(cur_dict["avg"], cur_center, cur_dict["num_inv"])
         draw_centers(cur_frame, cur_avg, cur_dict["bgr"])
         cv2.imshow(cur_key, cur_mask)
         cur_tag = "/" + cur_key
         send_osc(cur_tag, cur_avg)
+        cur_dict["num_inv"] = cur_inv
         cur_dict["avg"] = cur_avg
     return cur_dict
 
