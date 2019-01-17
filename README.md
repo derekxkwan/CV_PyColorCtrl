@@ -1,7 +1,7 @@
 # CV_PyColorCtrl
 opencv /osc webcam color-based xy-controller
 
-- **Python 3** requires `opencv-python` (OpenCV 4.0), and `python-osc`
+- uses **Python 3** and requires `opencv-python` (OpenCV 4.0), and `python-osc`
 
 [![cv_pycolorctrl demo](cv_pycolorctrl_1-16-19.png)](https://youtu.be/Qr1cq7uNvM4 "demo")
 
