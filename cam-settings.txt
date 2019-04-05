@@ -1,0 +1,13 @@
+9963776:                     Brightness:10
+9963777:                       Contrast:27
+9963778:                     Saturation:58
+9963779:                            Hue:0
+9963788:       White Balance, Automatic:1
+9963793:                       Exposure:133
+9963794:                Gain, Automatic:0
+9963795:                           Gain:24
+9963796:                Horizontal Flip:0
+9963797:                  Vertical Flip:0
+9963800:           Power Line Frequency:0
+9963803:                      Sharpness:0
+10094849:                  Auto Exposure:1

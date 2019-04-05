@@ -3,6 +3,7 @@
 from __future__ import print_function
 import cv2
 import numpy as np
+import sys
 
 from pythonosc import osc_message_builder
 from pythonosc import udp_client
@@ -14,29 +15,57 @@ area_thresh = 70
 inv_thresh = 3
 num_avg = 3
 
+display_win = False
+
+if len(sys.argv) >= 2:
+    if int(float(sys.argv[1])) > 0:
+            display_win = True
+    
+
+#red bounds         "bounds": [(0, 70, 70), (15, 255, 255), (170, 70, 70), (179, 255 ,255)],
+#blue bounds         "bounds": [(90, 20, 50), (125, 255, 255)],
+
 #num_inv = num frames invisible
 color_dict = {
     "red": {
-        "bounds": [(0, 70, 70), (15, 255, 255), (170, 70, 70), (179, 255 ,255)],
+        "bounds": [(0, 100, 100), (12, 255, 255), (165, 100, 100), (179, 255 ,255)],
         "bgr": (0,0,255),
         "check": True,
         "avg": [-1, -1],
         "num_inv": inv_thresh },
     "blue": {
-        "bounds": [(90, 20, 50), (125, 255, 255)],
+        "bounds": [(84, 80, 80), (103, 255, 255)],
         "bgr": (255, 0, 0),
         "check": True,
         "avg": [-1, -1],
         "num_inv": inv_thresh },
-    "yellow": {
-        "bounds": [(22, 110, 110), (32, 255, 255)],
-        "bgr": (0, 255, 255),
-        "check": False,
+    "purple": {
+        "bounds": [(120, 60, 60), (145, 255, 255)],
+        "bgr": (128, 0, 128),
+        "check": True,
         "avg": [-1, -1],
         "num_inv": inv_thresh },
     "green": {
-        "bounds": [(45, 50, 70), (70, 255, 255)],
+        "bounds": [(37, 80, 100), (78, 255, 255)],
         "bgr": (0, 255, 0),
+        "check": True,
+        "avg": [-1, -1],
+        "num_inv": inv_thresh },
+     "fushcia": {
+        "bounds": [(0, 55, 110), (10, 255, 255), (150, 55, 110), (179, 255, 255)], 
+        "bgr": (255, 0, 255),
+        "check": False,
+        "avg": [-1, -1],
+        "num_inv": inv_thresh },
+    "brown": {
+        "bounds": [(12, 24, 60), (30, 85, 200)],
+        "bgr": (42, 42, 165),
+        "check": False,
+        "avg": [-1, -1],
+        "num_inv": inv_thresh },
+      "yellow": {
+        "bounds": [(22.5, 100, 130), (30, 255, 200)],
+        "bgr": (255, 255, 0),
         "check": False,
         "avg": [-1, -1],
         "num_inv": inv_thresh }
@@ -51,7 +80,8 @@ cur_ip = "127.0.0.1"
 cur_port = 32323
 client = udp_client.SimpleUDPClient(cur_ip, cur_port)
 
-cv2.namedWindow(window_capture_name)
+if display_win == True:
+    cv2.namedWindow(window_capture_name)
 #cv2.namedWindow(window_detection_name)
 
 #osc func
@@ -186,7 +216,8 @@ def color_process(cur_frame, cur_hsv, cur_key, cur_dict):
         cur_mask, cur_center = mask_proc_dispatch(cur_hsv, cur_dict["bounds"])
         cur_inv, cur_avg = process_center(cur_dict["avg"], cur_center, cur_dict["num_inv"])
         draw_centers(cur_frame, cur_avg, cur_dict["bgr"])
-        cv2.imshow(cur_key, cur_mask)
+        if display_win == True:
+            cv2.imshow(cur_key, cur_mask)
         cur_tag = "/" + cur_key
         send_osc(cur_tag, cur_avg)
         cur_dict["num_inv"] = cur_inv
@@ -218,7 +249,8 @@ while True:
 
  
 
-    cv2.imshow(window_capture_name, frame)
+    if display_win == True:
+        cv2.imshow(window_capture_name, frame)
     #cv2.imshow("proc", frame_dilate)
     
     key = cv2.waitKey(30)
